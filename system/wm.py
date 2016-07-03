@@ -11,6 +11,7 @@ from . import connect
 class DesktopManager:
     def __init__(self, screen):
         self.screen = screen
+        self.session = "NONE"
         self.done = False
         self.show_main_menu = False
         self.tskb_size = (120, self.screen.get_height())
@@ -60,6 +61,7 @@ class DesktopManager:
     def on_start(self):
         start_screen = connect.Connect()
         start_screen.run()
+        self.session = start_screen.session[1]
 
         process_manager.ProcessManager.init_windows_with(self._content)
         w, h = self.main_txt_tsk_bar.get_size()
