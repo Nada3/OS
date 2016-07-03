@@ -6,8 +6,11 @@ from ..window import Window
 
 app_list = []
 
-from .test import App
-app_list.append(App)
+from .editeur import EditeurTexte
+app_list.append(EditeurTexte)
+
+from .keys_repeat import KeysRepeatWindow
+app_list.append(KeysRepeatWindow)
 
 from .process import ProcessManagerWindow
 app_list.append(ProcessManagerWindow)

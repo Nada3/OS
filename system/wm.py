@@ -38,7 +38,7 @@ class DesktopManager:
         apps = []
         for app in self.apps:
             apps.append(font.render(app, 1, BLACK))
-        self.apps = apps[:]
+        self.apps = list(zip(self.apps, apps[:]))
 
         for file in glob("apps/*.py"):
             fname = os.path.basename(file)
@@ -48,7 +48,7 @@ class DesktopManager:
         uapps = []
         for uapp in self.dl_apps:
             uapps.append(font.render(uapp, 1, BLACK))
-        self.dl_apps = uapps[:]
+        self.dl_apps = list(zip(self.dl_apps, uapps[:]))
 
     def update(self):
         # process_manager.ProcessManager.reoder_ifalive()
@@ -106,9 +106,9 @@ class DesktopManager:
         self._content.blit(self.texts['uapps'], (220 - self.texts['uapps'].get_width(), 10))
         y = 30
         for i, bapp in enumerate(self.apps):
-            self._content.blit(bapp, (10, y + i * 20))
+            self._content.blit(bapp[1], (10, y + i * 20))
         for i, uapp in enumerate(self.dl_apps):
-            self._content.blit(uapp, (220 - self.texts['uapps'].get_width(), y + i * 20))
+            self._content.blit(uapp[1], (220 - self.texts['uapps'].get_width(), y + i * 20))
         pygame.draw.rect(self._content, GREEN, (
             238 - self.texts['load'].get_width(), 363 - self.texts['load'].get_height(),
             4 + self.texts['load'].get_width(), 4 + self.texts['load'].get_height()

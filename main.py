@@ -6,6 +6,7 @@ import sys
 
 def main():
     pygame.init()
+    pygame.key.set_repeat(200, 100)
 
     win = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
