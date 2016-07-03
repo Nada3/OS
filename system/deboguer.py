@@ -1,4 +1,5 @@
 import time
+import sys
 import traceback
 from .utils import *
 
@@ -34,5 +35,6 @@ def info(kind, value, tb):
         pygame.display.flip()
     print("Redémarrage du système")
     if method:
+        sys.excepthook = info
         print("Attendez ...")
         method()
