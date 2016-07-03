@@ -95,7 +95,7 @@ class Window:
         if event.type == MOUSEBUTTONUP:
             self.clic_on_barre = False
             x, y = event.pos
-            if self.escape_btn[0] <= x <= self.escape_btn[0] + self.escape_btn[2] \
+            if not self.fullscreen and self.escape_btn[0] <= x <= self.escape_btn[0] + self.escape_btn[2] \
                     and self.escape_btn[1] <= y <= self.escape_btn[1] + self.escape_btn[3]:
                 pygame.draw.rect(self.screen, BLACK, (0, 0) + self.screen.get_size())
                 self.state = WStates.UNACTIVE
