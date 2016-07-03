@@ -5,7 +5,7 @@ import os
 import time
 
 
-TIMER_LOGIN = 5
+TIMER_LOGIN = 3
 
 
 class Connect:
@@ -32,7 +32,7 @@ class Connect:
             raise RuntimeError("Sessions corrupted. Can not continue.")
         else:
             for s in self.sessions:
-                if s['password'] == []:
+                if s['name'] != "guest" and s['password'] == []:
                     raise RuntimeError('Empty password, can not continue')
 
     def load(self):
@@ -71,12 +71,14 @@ class Connect:
                 self.session = (i, e['name'])
                 self.session_text = font.render(self.session[1], 1, BLACK)
                 self.user_pos = ((self.screen.get_width() - self.session_text.get_width()) // 2, (self.screen.get_height() - self.session_text.get_height()) // 2 - 50)
+                if self.session[1] == "guest":
+                    self._welcome()
                 return
         self._error("Non existing session")
 
     def _welcome(self):
         until = time.time() + TIMER_LOGIN
-        w, h = 200, 30
+        w, h = 200, 20
         bar_size = lambda: (TIMER_LOGIN - (until - time.time())) / TIMER_LOGIN * w
 
         xsc, ysc = self.screen.get_width() // 2, self.screen.get_height() // 2

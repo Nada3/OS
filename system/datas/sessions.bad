@@ -8,5 +8,9 @@
         "name": "folaefolc",
         "avatar": "folaefolc",
         "password": [17, 49, 145, 81, 1792, 1552, 1840, 1840, 18, 50, 146, 82, 1904, 1776, 1824, 1600]
+    },
+    {
+        "name": "guest",
+        "avatar": "guest"
     }
 ]

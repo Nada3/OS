@@ -6,5 +6,6 @@ from . import window
 from . import apps
 from . import process_manager
 from . import connect
+from . import deboguer
 
 from .apps import app_list
