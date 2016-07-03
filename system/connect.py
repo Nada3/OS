@@ -72,7 +72,8 @@ class Connect:
                 self.session_text = font.render(self.session[1], 1, BLACK)
                 self.user_pos = ((self.screen.get_width() - self.session_text.get_width()) // 2, (self.screen.get_height() - self.session_text.get_height()) // 2 - 50)
                 if self.session[1] == "guest":
-                    self._welcome()
+                    self.connected = True
+                    self.done = True
                 return
         self._error("Non existing session")
 

@@ -6,22 +6,33 @@ method = None
 
 
 def info(kind, value, tb):
-    output = traceback.format_exception(kind, value, tb).split('\n')
+    print("Démarrage du débogueur")
+    output = traceback.format_exception(kind, value, tb)
     screen = pygame.display.get_surface()
-    text = [font.render(o, 1, BLACK) for o in output]
+    output2 = []
+    print("Création de la liste d'erreurs (%i)" % len(output))
+    for i, o in enumerate(output):
+        if isinstance(o, str):
+            output2 += o.split("\n")
+    print("Création du contenu de la fenêtre")
+    text = [font.render(o, 1, BLACK) for o in output2]
     logo = pygame.image.load("system/resx/logo.png").convert_alpha()
-    y = logo.get_height() + 50
     x = 50
-    TIMER = time.time() + 5
+    y = logo.get_height() + 50
 
-    while time.time() <= TIMER:
-        screen.fill(BLUE)
+    print("Démarrage de l'instance graphique")
+    while True:
+        ev = pygame.event.poll()
+        if ev.type == KEYDOWN:
+            break
+
+        pygame.draw.rect(screen, BLUE, (0, 0) + screen.get_size())
         screen.blit(logo, (screen.get_width() // 2 - logo.get_width() // 2, 0))
         for i, o in enumerate(text):
-            screen.blit(o, (x, y))
-            y += i * 25
-        y += 50
-        screen.blit(font.render("Le système va redémarrer dans %2.2f secondes" % (TIMER - time.time())))
+            screen.blit(o, (x, y + i * 25))
+
         pygame.display.flip()
+    print("Redémarrage du système")
     if method:
+        print("Attendez ...")
         method()
