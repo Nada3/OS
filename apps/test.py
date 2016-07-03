@@ -21,12 +21,8 @@ class App(Window):
         # on va tester le débordement
         pygame.draw.rect(self._content, (255, 255, 0), (100, 20, 350, 350))
 
-    def bug(self):
-        a = 0 / 0
-
     def trigger_user(self, event):
-        if event.type == MOUSEBUTTONUP:
-            self.bug()
+        pass
 
     def update(self):
         pass

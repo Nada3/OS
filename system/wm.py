@@ -1,6 +1,8 @@
 #-*-coding:Utf-8-*-
 
 import time
+import os
+from glob import glob
 from .utils import *
 from . import process_manager
 from . import connect
@@ -13,8 +15,39 @@ class DesktopManager:
         self.show_main_menu = False
         self.tskb_size = (120, self.screen.get_height())
         self.cl_tskb = GREEN
+        self.apps = []
+        self.dl_apps = []
+        self.texts = {
+            "bapps": font.render("Bunker Apps", 1, BLACK),
+            "uapps": font.render("User Apps", 1, BLACK),
+            "load": font.render("Load Apps list", 1, BLACK)
+        }
         self.main_txt_tsk_bar = pygame.image.load("system/resx/logo.png").convert_alpha()
         self._content = pygame.Surface((self.screen.get_width() - self.tskb_size[0], self.screen.get_height()))
+
+    def load_apps_list(self):
+        self.apps = []
+        self.dl_apps = []
+
+        for file in glob("system/apps/*.py"):
+            fname = os.path.basename(file)
+            if fname != '__init__.py':
+                self.apps.append(fname[:-3])
+        self.apps = sorted(self.apps)
+        apps = []
+        for app in self.apps:
+            apps.append(font.render(app, 1, BLACK))
+        self.apps = apps[:]
+
+        for file in glob("apps/*.py"):
+            fname = os.path.basename(file)
+            if fname != '__init__.py':
+                self.dl_apps.append(fname[:-3])
+        self.dl_apps = sorted(self.dl_apps)
+        uapps = []
+        for uapp in self.dl_apps:
+            uapps.append(font.render(uapp, 1, BLACK))
+        self.dl_apps = uapps[:]
 
     def update(self):
         # process_manager.ProcessManager.reoder_ifalive()
@@ -65,7 +98,19 @@ class DesktopManager:
         self.screen.blit(self._content, (self.tskb_size[0], 0))
 
     def draw_main_menu(self):
-        pass
+        pygame.draw.rect(self._content, PURPLE, (0, 0, 250, 375))
+        self._content.blit(self.texts['bapps'], (10, 10))
+        self._content.blit(self.texts['uapps'], (220 - self.texts['uapps'].get_width(), 10))
+        y = 30
+        for i, bapp in enumerate(self.apps):
+            self._content.blit(bapp, (10, y + i * 20))
+        for i, uapp in enumerate(self.dl_apps):
+            self._content.blit(uapp, (220 - self.texts['uapps'].get_width(), y + i * 20))
+        pygame.draw.rect(self._content, GREEN, (
+            238 - self.texts['load'].get_width(), 363 - self.texts['load'].get_height(),
+            4 + self.texts['load'].get_width(), 4 + self.texts['load'].get_height()
+        ))
+        self._content.blit(self.texts['load'], (240 - self.texts['load'].get_width(), 365 - self.texts['load'].get_height()))
 
     def draw_task_bar(self):
         pygame.draw.rect(self.screen, self.cl_tskb, (0, 0) + self.tskb_size)
@@ -110,15 +155,30 @@ class DesktopManager:
         self.screen.blit(font_petite.render(t, 1, WHITE), (4, self.screen.get_size()[1] - 28))
 
     def trigger(self, event):
-        if event.type == MOUSEBUTTONDOWN and event.pos[0] > self.tskb_size[0] or event.type != MOUSEBUTTONDOWN:
+        # clic hors de la barre des taches
+        if (event.type == MOUSEBUTTONDOWN and event.pos[0] > self.tskb_size[0]) or event.type != MOUSEBUTTONDOWN:
+            # correction de la position
             if event.type in (MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION):
                 event.pos = (event.pos[0] - self.tskb_size[0], event.pos[1])
+            # clic dans le menu
+            if self.show_main_menu and event.type == MOUSEBUTTONDOWN:
+                x, y = event.pos
+                dimension = (238 - self.texts['load'].get_width(), 363 - self.texts['load'].get_height(),
+                             4 + self.texts['load'].get_width(), 4 + self.texts['load'].get_height())
+                if dimension[0] <= x <= dimension[0] + dimension[2] and dimension[1] <= y <= dimension[1] + dimension[3]:
+                    self.load_apps_list()
+            # mise en actif d'un processus
             if process_manager.ProcessManager.get_first_active():
                 process_manager.ProcessManager.get_first_active().trigger(event)
-        elif event.type == MOUSEBUTTONDOWN and event.pos[0] <= self.tskb_size[0] and event.pos[1] > self.main_txt_tsk_bar.get_height():
-            if event.button == 1:
-                self.select_prog(event.pos[1])
-            elif event.button == 3:
-                self.kill_prog(event.pos[1])
-        elif event.type == MOUSEBUTTONDOWN and 0 <= event.pos[0] <= self.tskb_size[0] and 0 <= event.pos[1] <= self.main_txt_tsk_bar.get_height():
-            self.show_main_menu = True
+        # clic sur la barre des taches
+        elif event.type == MOUSEBUTTONDOWN:
+            x, y = event.pos
+            # select/kill prog
+            if x <= self.tskb_size[0] and y > self.main_txt_tsk_bar.get_height():
+                if event.button == 1:
+                    self.select_prog(y)
+                elif event.button == 3:
+                    self.kill_prog(y)
+            # activation ou non du menu
+            elif 0 <= x <= self.tskb_size[0] and 0 <= y <= self.main_txt_tsk_bar.get_height():
+                self.show_main_menu = not self.show_main_menu
