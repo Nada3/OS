@@ -56,7 +56,7 @@ class DesktopManager:
         pygame.draw.rect(self._content, BLACK, (0, 0) + self._content.get_size())
 
         for i in process_manager.ProcessManager.windows()[::-1]:
-            i.draw()
+            process_manager.ProcessManager.draw_process(i)
         self.draw_task_bar()
         self.main_button_tsk_bar()
         self.print_time()

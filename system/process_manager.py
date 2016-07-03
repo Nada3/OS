@@ -22,12 +22,27 @@ class ProcessManager:
 
     @staticmethod
     def update_process(process):
-        start = time.time()
-        process.update()
-        ProcessManager.instance._execution_datas[process.get_title()]['exc_times'].append((time.time() - start) * 1000)
+        if process.state != WStates.UNACTIVE:
+            start = time.time()
+            process.update()
+            ProcessManager.instance._execution_datas[process.get_title()]['exc_times'].append((time.time() - start) * 1000)
+        else:
+            ProcessManager.instance._execution_datas[process.get_title()]['draw_times'].append(0.0)
         if len(ProcessManager.instance._execution_datas[process.get_title()]['exc_times']) > MAX:
             ProcessManager.instance._execution_datas[process.get_title()]['exc_times'] = \
                 ProcessManager.instance._execution_datas[process.get_title()]['exc_times'][::-1][:MAX][::-1]
+
+    @staticmethod
+    def draw_process(process, *args):
+        if process.state != WStates.UNACTIVE:
+            start = time.time()
+            process.draw(*args)
+            ProcessManager.instance._execution_datas[process.get_title()]['draw_times'].append((time.time() - start) * 1000)
+        else:
+            ProcessManager.instance._execution_datas[process.get_title()]['draw_times'].append(0.0)
+        if len(ProcessManager.instance._execution_datas[process.get_title()]['draw_times']) > MAX:
+            ProcessManager.instance._execution_datas[process.get_title()]['draw_times'] = \
+                ProcessManager.instance._execution_datas[process.get_title()]['draw_times'][::-1][:MAX][::-1]
 
     @staticmethod
     def remove_process(i):
@@ -78,7 +93,8 @@ class ProcessManager:
         i = window(*args)
         ProcessManager.windows().append(i)
         ProcessManager.instance._execution_datas[i.get_title()] = {
-            'exc_times': []
+            'exc_times': [],
+            'draw_times': []
         }
 
     @staticmethod
@@ -86,7 +102,8 @@ class ProcessManager:
         for i, window in enumerate(ProcessManager.windows()):
             ProcessManager.windows()[i] = window(*args)
             ProcessManager.instance._execution_datas[ProcessManager.windows()[i].get_title()] = {
-                'exc_times': []
+                'exc_times': [],
+                'draw_times': []
             }
 
     @staticmethod

@@ -12,7 +12,7 @@ def main():
     win_manager = system.wm.DesktopManager(win)
     system.process_manager.ProcessManager()
 
-    system.process_manager.ProcessManager.add_windows(*[_ for _ in apps.app_list + system.app_list])
+    system.process_manager.ProcessManager.add_windows(*[_ for _ in system.app_list + apps.app_list])
     win_manager.run()
 
     pygame.quit()
@@ -20,5 +20,5 @@ def main():
 
 if __name__ == '__main__':
     sys.excepthook = system.deboguer.info
-    system.deboguer.method = lambda: (pygame.quit(), main)
+    system.deboguer.method = main()
     main()

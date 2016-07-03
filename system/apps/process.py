@@ -28,7 +28,7 @@ class ProcessManagerWindow(Window):
         self._content.blit(text2, (250, 0))
         self._content.blit(text3, (150, 0))
 
-        y = 15
+        y, h = 30, 15
         s = "UNKNOW"
         for window in ProcessManager.windows():
             if window.state == WStates.ACTIVE:
@@ -50,7 +50,12 @@ class ProcessManagerWindow(Window):
             self._content.blit(name, (4, y))
             self._content.blit(status, (250, y))
             self._content.blit(dt, (150, y))
-            y += text.get_height()
+            y += h
 
     def trigger_user(self, event):
-        pass
+        if event.type == MOUSEBUTTONUP:
+            x, y = event.pos
+            real_select = (y - 15) // 15
+            if 0 <= real_select < len(ProcessManager.windows()):
+                if ProcessManager.windows()[real_select].state != WStates.UNACTIVE:
+                    ProcessManager.windows()[real_select].set_alive(WStates.UNACTIVE)
