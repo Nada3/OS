@@ -62,6 +62,7 @@ class DesktopManager:
         start_screen = connect.Connect()
         start_screen.run()
         self.session = start_screen.session[1]
+        process_manager.ProcessManager.set_session(self.session)
 
         process_manager.ProcessManager.init_windows_with(self._content)
         w, h = self.main_txt_tsk_bar.get_size()

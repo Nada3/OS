@@ -15,6 +15,11 @@ class ProcessManager:
         self._adding_order = []
         self._clock = pygame.time.Clock()
         self._execution_datas = {}
+        self._current_session = "NONE"
+
+    @staticmethod
+    def set_session(name):
+        ProcessManager.instance._current_session = name
 
     @staticmethod
     def execution_datas():
