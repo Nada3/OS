@@ -11,3 +11,7 @@ app_list.append(App)
 
 from .process import ProcessManagerWindow
 app_list.append(ProcessManagerWindow)
+
+# cette App doit être ajoutée en dernier obligatoirement
+from .desktop import Desktop
+app_list.append(Desktop)

@@ -89,11 +89,17 @@ class DesktopManager:
         pygame.draw.rect(self.screen, YELLOW, (0, 0, self.tskb_size[0], self.main_txt_tsk_bar.get_height()))
         self.screen.blit(self.main_txt_tsk_bar, (0, 0))
 
-    def select_prog(self, y=0):
+    def select_prog(self, y):
         real_select = (y - self.main_txt_tsk_bar.get_height() - 10) // 14
         if 0 <= real_select < len(process_manager.ProcessManager.windows()):
             if real_select < len(process_manager.ProcessManager.windows()):
                 process_manager.ProcessManager.set_as_toplevel(real_select)
+
+    def kill_prog(self, y):
+        real_select = (y - self.main_txt_tsk_bar.get_height() - 10) // 14
+        if 0 <= real_select < len(process_manager.ProcessManager.windows()):
+            if real_select < len(process_manager.ProcessManager.windows()):
+                process_manager.ProcessManager.kill_process(real_select)
 
     def print_time(self):
         t = time.strftime("%A")
@@ -110,6 +116,9 @@ class DesktopManager:
             if process_manager.ProcessManager.get_first_active():
                 process_manager.ProcessManager.get_first_active().trigger(event)
         elif event.type == MOUSEBUTTONDOWN and event.pos[0] <= self.tskb_size[0] and event.pos[1] > self.main_txt_tsk_bar.get_height():
-            self.select_prog(event.pos[1])
+            if event.button == 1:
+                self.select_prog(event.pos[1])
+            elif event.button == 3:
+                self.kill_prog(event.pos[1])
         elif event.type == MOUSEBUTTONDOWN and 0 <= event.pos[0] <= self.tskb_size[0] and 0 <= event.pos[1] <= self.main_txt_tsk_bar.get_height():
             self.show_main_menu = True

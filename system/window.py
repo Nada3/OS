@@ -6,9 +6,11 @@ EPAISSEUR_BARRE = 24
 
 class Window:
     def __init__(self, screen, titre="", version=1.0, pos=(0, 0), size=(0, 0), couleur=(20, 20, 20),
-                 contour_couleur=BLACK, couleur_barre=GREY, movable=True, cote_c=EPAISSEUR_BARRE // 2):
+                 contour_couleur=BLACK, couleur_barre=GREY, movable=True, fullscreen=False,
+                 cote_c=EPAISSEUR_BARRE // 2):
         self.screen = screen
         self.movable = movable
+        self.fullscreen = fullscreen
         self.couleur_barre = couleur_barre
         self.wscreen, self.hscreen = self.screen.get_size()
         self.titre = titre
@@ -55,11 +57,12 @@ class Window:
 
     def draw(self):
         if self.alive():
-            self.draw_vitals()
+            if not self.fullscreen:
+                self.draw_vitals()
             self.draw_content()
             if self.state == WStates.NOT_RESPONDING:
                 self._content.blit(self._blurw, (0, 0))
-            self.screen.blit(self._content, (self.pos[0], self.pos[1] + EPAISSEUR_BARRE))
+            self.screen.blit(self._content, (self.pos[0], self.pos[1] + EPAISSEUR_BARRE if not self.fullscreen else self.pos[1]))
 
     def set_alive(self, value=WStates.ACTIVE):
         self.state = value

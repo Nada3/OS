@@ -34,6 +34,10 @@ class ProcessManager:
         ProcessManager.instance._windows[0:0] = [ProcessManager.instance._windows.pop(i)]
 
     @staticmethod
+    def kill_process(i):
+        ProcessManager.instance._windows.pop(i)
+
+    @staticmethod
     def get_first_active():
         for win in ProcessManager.windows():
             if win.state == WStates.ACTIVE:
