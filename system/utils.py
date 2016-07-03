@@ -38,6 +38,8 @@ LIGHT_YELLOW = ()
 LIGHT_PURPLE = ()
 LIGHT_ORANGE = ()
 
+LIGHT_GREY = (172, 172, 172)
+
 DARK_BLUE = ()
 DARK_RED = ()
 DARK_GREEN = ()
@@ -46,5 +48,5 @@ DARK_PURPLE = ()
 DARK_ORANGE = ()
 
 pygame.font.init()
-font = pygame.font.Font("system/resx/freesansbold.ttf", 16)
-font_petite = pygame.font.Font("system/resx/freesansbold.ttf", 11)
+font = pygame.font.Font("system/resx/jai.ttf", 15)
+font_petite = pygame.font.Font("system/resx/jai.ttf", 11)

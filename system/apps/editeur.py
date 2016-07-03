@@ -17,7 +17,8 @@ class EditeurTexte(Window):
         self.texts = {
             "content": [],
             "cli_datas": {"line": 0, "char": 0},
-            "cli": font.render("_", 1, RED)
+            "cli": font.render("_", 1, RED),
+            "a": font.render("a", 1, BLACK)
         }
         self.text = ""
         self.curseur = 0
@@ -27,11 +28,11 @@ class EditeurTexte(Window):
         pygame.draw.rect(self._content, self.couleur, (0, 0) + self.size)
         y = 25
         # barre menu
-        pygame.draw.rect(self._content, GREY, (0, 0, self.size[0], y))
+        pygame.draw.rect(self._content, LIGHT_GREY, (0, 0, self.size[0], y))
         # texte
         for li, line in enumerate(self.texts["content"]):
             if li == self.texts["cli_datas"]["line"]:
-                self._content.blit(self.texts["cli"], (self.texts["cli_datas"]["char"] * self.texts["cli"].get_width(), y + 2))
+                self._content.blit(self.texts["cli"], (self.texts["cli_datas"]["char"] * self.texts["a"].get_width(), y + 2))
             self._content.blit(line, (0, y))
             y += line.get_height() + 2
 
