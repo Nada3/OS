@@ -19,7 +19,7 @@ class ProcessManagerWindow(Window):
 
     def draw_content(self):
         # fond
-        pygame.draw.rect(self._content, self.couleur, (0, 0) + self.size)
+        pygame.draw.rect(self._content, self.couleur, (0, 0) + tuple(self.size))
 
         text = font_petite.render("NAME", 1, BLACK)
         text2 = font_petite.render("STATUS", 1, BLACK)

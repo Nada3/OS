@@ -4,6 +4,7 @@ import time
 
 class ProcessManager:
     MAX = 10
+    ID = 0
     instance = None
 
     def __init__(self):
@@ -28,24 +29,24 @@ class ProcessManager:
         if process.state != WStates.UNACTIVE:
             start = time.time()
             process.update()
-            ProcessManager.instance._execution_datas[process.get_title()]['exc_times'].append((time.time() - start) * 1000)
+            ProcessManager.instance._execution_datas[process.id]['exc_times'].append((time.time() - start) * 1000)
         else:
-            ProcessManager.instance._execution_datas[process.get_title()]['draw_times'].append(0.0)
-        if len(ProcessManager.instance._execution_datas[process.get_title()]['exc_times']) > ProcessManager.MAX:
-            ProcessManager.instance._execution_datas[process.get_title()]['exc_times'] = \
-                ProcessManager.instance._execution_datas[process.get_title()]['exc_times'][::-1][:ProcessManager.MAX][::-1]
+            ProcessManager.instance._execution_datas[process.id]['draw_times'].append(0.0)
+        if len(ProcessManager.instance._execution_datas[process.id]['exc_times']) > ProcessManager.MAX:
+            ProcessManager.instance._execution_datas[process.id]['exc_times'] = \
+                ProcessManager.instance._execution_datas[process.id]['exc_times'][::-1][:ProcessManager.MAX][::-1]
 
     @staticmethod
     def draw_process(process, *args):
         if process.state != WStates.UNACTIVE:
             start = time.time()
             process.draw(*args)
-            ProcessManager.instance._execution_datas[process.get_title()]['draw_times'].append((time.time() - start) * 1000)
+            ProcessManager.instance._execution_datas[process.id]['draw_times'].append((time.time() - start) * 1000)
         else:
-            ProcessManager.instance._execution_datas[process.get_title()]['draw_times'].append(0.0)
-        if len(ProcessManager.instance._execution_datas[process.get_title()]['draw_times']) > ProcessManager.MAX:
-            ProcessManager.instance._execution_datas[process.get_title()]['draw_times'] = \
-                ProcessManager.instance._execution_datas[process.get_title()]['draw_times'][::-1][:ProcessManager.MAX][::-1]
+            ProcessManager.instance._execution_datas[process.id]['draw_times'].append(0.0)
+        if len(ProcessManager.instance._execution_datas[process.id]['draw_times']) > ProcessManager.MAX:
+            ProcessManager.instance._execution_datas[process.id]['draw_times'] = \
+                ProcessManager.instance._execution_datas[process.id]['draw_times'][::-1][:ProcessManager.MAX][::-1]
 
     @staticmethod
     def remove_process(i):
@@ -95,19 +96,21 @@ class ProcessManager:
     def add_window_and_init(window, *args):
         i = window(*args)
         ProcessManager.windows().append(i)
-        ProcessManager.instance._execution_datas[i.get_title()] = {
+        ProcessManager.instance._execution_datas[i.id] = {
             'exc_times': [],
             'draw_times': []
         }
+        i.id = ProcessManager.ID + 1
 
     @staticmethod
     def init_windows_with(*args):
         for i, window in enumerate(ProcessManager.windows()):
             ProcessManager.windows()[i] = window(*args)
-            ProcessManager.instance._execution_datas[ProcessManager.windows()[i].get_title()] = {
+            ProcessManager.instance._execution_datas[ProcessManager.windows()[i].id] = {
                 'exc_times': [],
                 'draw_times': []
             }
+            ProcessManager.windows()[i].id = ProcessManager.ID + 1
 
     @staticmethod
     def reoder_ifalive():

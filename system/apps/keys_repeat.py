@@ -30,7 +30,7 @@ class KeysRepeatWindow(Window):
 
     def draw_content(self):
         # fond
-        pygame.draw.rect(self._content, self.couleur, (0, 0) + self.size)
+        pygame.draw.rect(self._content, self.couleur, (0, 0) + tuple(self.size))
         if not self.print_done:
             self._content.blit(self.texts['ex'], (10, 10))
             self._content.blit(self.texts['ex2'], (10, 30))

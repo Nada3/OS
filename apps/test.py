@@ -16,7 +16,7 @@ class App(Window):
 
     def draw_content(self):
         # fond
-        pygame.draw.rect(self._content, self.couleur, (0, 0) + self.size)
+        pygame.draw.rect(self._content, self.couleur, (0, 0) + tuple(self.size))
 
         # on va tester le débordement
         pygame.draw.rect(self._content, (255, 255, 0), (100, 20, 350, 350))

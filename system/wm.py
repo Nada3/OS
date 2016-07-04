@@ -157,11 +157,11 @@ class DesktopManager:
 
     def print_time(self):
         t = time.strftime("%A")
-        self.screen.blit(font_petite.render(t, 1, WHITE), (4, self.screen.get_size()[1] - 42))
-        t = time.strftime("%H : %M : %S")
-        self.screen.blit(font_petite.render(t, 1, WHITE), (4, self.screen.get_size()[1] - 14))
+        self.screen.blit(font.render(t, 1, WHITE), (4, self.screen.get_size()[1] - 46))
         t = time.strftime("%d %B")
-        self.screen.blit(font_petite.render(t, 1, WHITE), (4, self.screen.get_size()[1] - 28))
+        self.screen.blit(font.render(t, 1, WHITE), (4, self.screen.get_size()[1] - 32))
+        t = time.strftime("%H:%M :%S")
+        self.screen.blit(font.render(t, 1, WHITE), (4, self.screen.get_size()[1] - 18))
 
     def trigger(self, event):
         # clic hors de la barre des taches
@@ -177,8 +177,11 @@ class DesktopManager:
                 if dimension[0] <= x <= dimension[0] + dimension[2] and dimension[1] <= y <= dimension[1] + dimension[3]:
                     self.load_apps_list()
             # mise en actif d'un processus
-            if process_manager.ProcessManager.get_first_active():
-                process_manager.ProcessManager.get_first_active().trigger(event)
+            w = process_manager.ProcessManager.get_first_active()
+            if w:
+                if event.type in (MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION):
+                    event.pos = (event.pos[0] - w.pos.x, event.pos[1] - w.pos.y)
+                w.trigger(event)
         # clic sur la barre des taches
         elif event.type == MOUSEBUTTONDOWN:
             x, y = event.pos

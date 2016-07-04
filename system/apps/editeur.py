@@ -19,7 +19,8 @@ class EditeurTexte(Window):
             "cli_datas": {"line": 0, "char": 0},
             "cli": font.render("_", 1, RED),
             "save": font.render("Save", 1, BLACK),
-            "open": font.render("Open", 1, BLACK)
+            "open": font.render("Open", 1, BLACK),
+            "sep": font.render("|", 1, BLACK)
         }
         self.text = ""
         self.curseur = 0
@@ -27,13 +28,14 @@ class EditeurTexte(Window):
 
     def draw_content(self):
         # fond
-        pygame.draw.rect(self._content, self.couleur, tuple(self.offsets) + self.size)
+        pygame.draw.rect(self._content, self.couleur, tuple(self.offsets) + tuple(self.size))
         y = 25
 
         # barre menu
-        pygame.draw.rect(self._content, LIGHT_GREY, (0, 0, self.size[0], y))
+        pygame.draw.rect(self._content, LIGHT_GREY, (0, 0, self.size.x, y))
         self._content.blit(self.texts["open"], (5, 5))
-        self._content.blit(self.texts["save"], (10 + self.texts["open"].get_width(), 5))
+        self._content.blit(self.texts["sep"], (10 + self.texts["open"].get_width(), 5))
+        self._content.blit(self.texts["save"], (15 + self.texts["open"].get_width() + self.texts["sep"].get_width(), 5))
 
         # texte
         for li, line in enumerate(self.texts["content"]):
@@ -64,6 +66,17 @@ class EditeurTexte(Window):
             else:
                 self.text += event.unicode
                 self.curseur += 1
+        if event.type == MOUSEBUTTONDOWN:
+            x, y = event.pos
+            # barre
+            if 0 <= y <= 25:
+                if 0 <= x <= self.texts["open"].get_width() + 5:
+                    # open
+                    pass
+                if self.texts["open"].get_width() + self.texts["sep"].get_width() + 10 <= x <= \
+                        self.texts["save"].get_width() + self.texts["open"].get_width() + self.texts["sep"].get_width() + 15:
+                    # save
+                    pass
 
     # TODO: ne générer que la partie visible du texte
     def update(self):
@@ -72,7 +85,7 @@ class EditeurTexte(Window):
         tot = 0
         for li, line in enumerate(text):
             for ch, char in enumerate(line):
-                if tot == self.curseur - 1:
+                if tot == self.curseur:
                     self.texts["cli_datas"]["line"] = li
                     self.texts["cli_datas"]["char"] = ch
                     break

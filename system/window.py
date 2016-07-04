@@ -16,24 +16,26 @@ class Window:
         self.titre = titre
         self.version = version
         self.fen_name = "[" + self.titre + "]" + " " + str(self.version)
-        self.pos = pos
-        self.size = size
+        self.pos = Point(*pos)
+        self.size = Point(*size)
         self.couleur = couleur
         self.cote_c = cote_c
         self.state = WStates.ACTIVE
         self.escape_btn = (
-            self.pos[0] + self.size[0] - (EPAISSEUR_BARRE - self.cote_c) // 2 - self.cote_c,
-            self.pos[1] + (EPAISSEUR_BARRE - self.cote_c) // 2,
+            self.pos.x + self.size.x - (EPAISSEUR_BARRE - self.cote_c) // 2 - self.cote_c,
+            self.pos.y + (EPAISSEUR_BARRE - self.cote_c) // 2,
             self.cote_c,
             self.cote_c
         )
-        self._content = pygame.Surface(self.size)
+        self._content = pygame.Surface(tuple(self.size))
         self.clic_on_barre = False
 
-        self._contour = pygame.Surface((self.size[0] + 4, self.size[1] + 4 + EPAISSEUR_BARRE))
+        self._contour = pygame.Surface((self.size.x + 4, self.size.y + 4 + EPAISSEUR_BARRE))
         pygame.draw.rect(self._contour, contour_couleur, (0, 0) + self._contour.get_size())
 
-        self._blurw = pygame.Surface(self.size)
+        self.id = None
+
+        self._blurw = pygame.Surface(tuple(self.size))
         self._blurw.fill(WHITE)
         self._blurw.convert_alpha()
         self._blurw.set_alpha(225)
@@ -43,17 +45,17 @@ class Window:
 
     def draw_vitals(self):
         # contour
-        self.screen.blit(self._contour, (self.pos[0] - 2, self.pos[1] - 2))
+        self.screen.blit(self._contour, (self.pos.x - 2, self.pos.y - 2))
         # barre
-        pygame.draw.rect(self.screen, self.couleur_barre, self.pos + (self.size[0], EPAISSEUR_BARRE))
+        pygame.draw.rect(self.screen, self.couleur_barre, tuple(self.pos) + (self.size.x, EPAISSEUR_BARRE))
         # titre
-        self.screen.blit(font.render(self.fen_name, 1, BLACK), (self.pos[0] + 2, self.pos[1] + 2))
+        self.screen.blit(font.render(self.fen_name, 1, BLACK), (self.pos.x + 2, self.pos.y + 2))
         # croix
         pygame.draw.rect(self.screen, RED, self.escape_btn)
 
     def draw_content(self):
         # fond
-        pygame.draw.rect(self._content, self.couleur, (0, 0) + self.size)
+        pygame.draw.rect(self._content, self.couleur, (0, 0) + tuple(self.size))
 
     def draw(self):
         if self.alive():
@@ -62,7 +64,7 @@ class Window:
             self.draw_content()
             if self.state == WStates.NOT_RESPONDING:
                 self._content.blit(self._blurw, (0, 0))
-            self.screen.blit(self._content, (self.pos[0], self.pos[1] + EPAISSEUR_BARRE if not self.fullscreen else self.pos[1]))
+            self.screen.blit(self._content, (self.pos.x, self.pos.y + EPAISSEUR_BARRE if not self.fullscreen else self.pos.y))
 
     def set_alive(self, value=WStates.ACTIVE):
         self.state = value
@@ -74,10 +76,10 @@ class Window:
         return self.fen_name
 
     def move(self, xd, yd):
-        self.pos = (self.pos[0] + xd, self.pos[1] + yd)
+        self.pos = (self.pos.x + xd, self.pos.y + yd)
         self.escape_btn = (
-            self.pos[0] + self.size[0] - (24 - self.cote_c) // 2 - self.cote_c,
-            self.pos[1] + (EPAISSEUR_BARRE - self.cote_c) // 2,
+            self.pos.x + self.size.x - (24 - self.cote_c) // 2 - self.cote_c,
+            self.pos.y + (EPAISSEUR_BARRE - self.cote_c) // 2,
             self.cote_c,
             self.cote_c
         )
@@ -85,7 +87,7 @@ class Window:
     def trigger_vitals(self, event):
         if event.type == MOUSEBUTTONDOWN:
             x, y = event.pos
-            if self.pos[0] <= x <= self.pos[0] + self.size[0] and self.pos[1] <= y <= self.pos[1] + EPAISSEUR_BARRE:
+            if self.pos.x <= x <= self.pos.x + self.size.x and self.pos.y <= y <= self.pos.y + EPAISSEUR_BARRE:
                 self.clic_on_barre = True
         if event.type == MOUSEMOTION:
             if self.clic_on_barre:
