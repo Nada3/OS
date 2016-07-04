@@ -18,21 +18,27 @@ class EditeurTexte(Window):
             "content": [],
             "cli_datas": {"line": 0, "char": 0},
             "cli": font.render("_", 1, RED),
-            "a": font.render("a", 1, BLACK)
+            "save": font.render("Save", 1, BLACK),
+            "open": font.render("Open", 1, BLACK)
         }
         self.text = ""
         self.curseur = 0
+        self.offsets = Point(0, 0)
 
     def draw_content(self):
         # fond
-        pygame.draw.rect(self._content, self.couleur, (0, 0) + self.size)
+        pygame.draw.rect(self._content, self.couleur, tuple(self.offsets) + self.size)
         y = 25
+
         # barre menu
         pygame.draw.rect(self._content, LIGHT_GREY, (0, 0, self.size[0], y))
+        self._content.blit(self.texts["open"], (5, 5))
+        self._content.blit(self.texts["save"], (10 + self.texts["open"].get_width(), 5))
+
         # texte
         for li, line in enumerate(self.texts["content"]):
             if li == self.texts["cli_datas"]["line"]:
-                self._content.blit(self.texts["cli"], (self.texts["cli_datas"]["char"] * self.texts["a"].get_width(), y + 2))
+                self._content.blit(self.texts["cli"], (self.texts["cli_datas"]["char"] * sample_text.get_width(), y + 2))
             self._content.blit(line, (0, y))
             y += line.get_height() + 2
 
@@ -41,6 +47,8 @@ class EditeurTexte(Window):
             if event.key == K_BACKSPACE:
                 self.text = self.text[:self.curseur] + self.text[self.curseur + 1:]
                 self.curseur -= 1
+            elif event.key == K_DELETE:
+                self.text = self.text[:self.curseur] + self.text[self.curseur + 1:]
             elif event.key in (K_RETURN, K_KP_ENTER):
                 self.text += "\n"
                 self.curseur += 1
@@ -48,9 +56,11 @@ class EditeurTexte(Window):
                 self.text += " " * 4
                 self.curseur += 4
             elif event.key == K_LEFT:
-                self.curseur -= 1
+                if self.curseur > 0:
+                    self.curseur -= 1
             elif event.key == K_RIGHT:
-                self.curseur += 1
+                if self.curseur < len(self.text) - 1:
+                    self.curseur += 1
             else:
                 self.text += event.unicode
                 self.curseur += 1

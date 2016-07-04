@@ -13,6 +13,36 @@ class WStates(Enum):
     WAITING = 3
 
 
+class Point:
+    def __init__(self, x=0, y=0):
+        self._x = 0
+        self._y = 0
+
+    @property
+    def x(self):
+        return self._x
+
+    @x.setter
+    def x(self, new):
+        self._x = new
+
+    @property
+    def y(self):
+        return self._y
+
+    @y.setter
+    def y(self, new):
+        self._y = new
+
+    def translate(self, nx, ny):
+        self.x += nx
+        self.y += ny
+
+    def __iter__(self):
+        yield self.x
+        yield self.y
+
+
 RED = (180, 0, 0)
 GREEN = (0, 180, 0)
 BLUE = (0, 0, 180)
@@ -48,5 +78,6 @@ DARK_PURPLE = ()
 DARK_ORANGE = ()
 
 pygame.font.init()
-font = pygame.font.Font("system/resx/jai.ttf", 15)
-font_petite = pygame.font.Font("system/resx/jai.ttf", 11)
+font = pygame.font.Font("system/resx/fonts/Hack-Regular.ttf", 16)
+font_petite = pygame.font.Font("system/resx/fonts/Hack-Regular.ttf", 12)
+sample_text = font.render("a", 1, BLACK)

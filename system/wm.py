@@ -2,6 +2,7 @@
 
 import time
 import os
+import math
 from glob import glob
 from .utils import *
 from . import process_manager
@@ -118,18 +119,23 @@ class DesktopManager:
     def draw_task_bar(self):
         pygame.draw.rect(self.screen, self.cl_tskb, (0, 0) + self.tskb_size)
         y = self.main_txt_tsk_bar.get_height() + 10
-        dispo = (self.tskb_size[0] - 8) // 6
+        dispo = math.ceil(self.tskb_size[0] / sample_text.get_width())
         color = RED
-        for i in process_manager.ProcessManager.windows():
-            if i.state == WStates.ACTIVE:
+        xm, ym = pygame.mouse.get_pos()
+        mo = self.mouseover_prog(ym)
+        for i, w in enumerate(process_manager.ProcessManager.windows()):
+            if w.state == WStates.ACTIVE:
                 color = WHITE
-            elif i.state == WStates.UNACTIVE:
+            elif w.state == WStates.UNACTIVE:
                 color = BLACK
-            elif i.state == WStates.NOT_RESPONDING:
+            elif w.state == WStates.NOT_RESPONDING:
                 color = BLUE
-            elif i.state == WStates.WAITING:
+            elif w.state == WStates.WAITING:
                 color = YELLOW
-            txt = font_petite.render(i.get_title()[:dispo], 1, color)
+
+            txt = font_petite.render(w.get_title()[:dispo], 1, color)
+            if i == mo and xm <= self.tskb_size[0]:
+                pygame.draw.rect(self.screen, RED, (0, y - 2, self.tskb_size[0], txt.get_height() + 4))
             self.screen.blit(txt, (4, y))
             y += txt.get_height() + 4
 
@@ -137,17 +143,17 @@ class DesktopManager:
         pygame.draw.rect(self.screen, YELLOW, (0, 0, self.tskb_size[0], self.main_txt_tsk_bar.get_height()))
         self.screen.blit(self.main_txt_tsk_bar, (0, 0))
 
-    def select_prog(self, y):
-        real_select = (y - self.main_txt_tsk_bar.get_height() - 10) // 14
+    def mouseover_prog(self, y):
+        real_select = (y - self.main_txt_tsk_bar.get_height() - 10) // sample_text.get_height()
         if 0 <= real_select < len(process_manager.ProcessManager.windows()):
-            if real_select < len(process_manager.ProcessManager.windows()):
-                process_manager.ProcessManager.set_as_toplevel(real_select)
+            return real_select
+        return - 1
+
+    def select_prog(self, y):
+        process_manager.ProcessManager.set_as_toplevel(y)
 
     def kill_prog(self, y):
-        real_select = (y - self.main_txt_tsk_bar.get_height() - 10) // 14
-        if 0 <= real_select < len(process_manager.ProcessManager.windows()):
-            if real_select < len(process_manager.ProcessManager.windows()):
-                process_manager.ProcessManager.kill_process(real_select)
+        process_manager.ProcessManager.kill_process(y)
 
     def print_time(self):
         t = time.strftime("%A")
@@ -178,10 +184,12 @@ class DesktopManager:
             x, y = event.pos
             # select/kill prog
             if x <= self.tskb_size[0] and y > self.main_txt_tsk_bar.get_height():
-                if event.button == 1:
-                    self.select_prog(y)
-                elif event.button == 3:
-                    self.kill_prog(y)
+                mo = self.mouseover_prog(y)
+                if mo != -1:
+                    if event.button == 1:
+                        self.select_prog(mo)
+                    elif event.button == 3:
+                        self.kill_prog(mo)
             # activation ou non du menu
             elif 0 <= x <= self.tskb_size[0] and 0 <= y <= self.main_txt_tsk_bar.get_height():
                 self.show_main_menu = not self.show_main_menu

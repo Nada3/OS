@@ -68,7 +68,7 @@ class Window:
         self.state = value
 
     def alive(self):
-        return self.state in (WStates.ACTIVE, WStates.NOT_RESPONDING, WStates.WAITING)
+        return self.state != WStates.UNACTIVE
 
     def get_title(self):
         return self.fen_name

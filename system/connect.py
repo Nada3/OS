@@ -19,7 +19,7 @@ class Connect:
         self.session_text = font.render(self.session[1], 1, BLACK)
         self.text = font.render("", 1, WHITE)
         self.max_len_pwd = 20
-        self.quitter = font.render("Quitter", 1, BLACK)
+        self.quitter = font.render("Quitter", 1, WHITE)
         self.wrong = font.render("WRONG", 1, BLACK)
         self.pos_text_box = ((self.screen.get_width() - 200) // 2, (self.screen.get_height() - 20) // 2)
         self.error_box_pos = ((self.screen.get_width() - 225) // 2, (self.screen.get_height() - 150) // 2)
@@ -102,15 +102,13 @@ class Connect:
     def run(self):
         self.load()
 
-        t = font.render("_", 1, BLACK)
-
         while not self.done:
             pygame.draw.rect(self.screen, PASTEL_BLUE, (0, 0) + self.screen.get_size())
             pygame.draw.rect(self.screen, PASTEL_ORANGE, (4 * self.screen.get_width() / 5, 0, self.screen.get_width() / 5, self.screen.get_height()))
             self.screen.blit(font.render("Sessions", 1, BLACK), (4 * self.screen.get_width() / 5 + 10, 10))
             for i, s in enumerate(self.sessions):
                 self.screen.blit(font.render("-> " + s['name'], 1, BLACK), (4 * self.screen.get_width() / 5 + 10, 50 + i * 40))
-                self.screen.blit(font.render("_" * int(self.screen.get_width() / 5 / t.get_width()), 1, BLACK), (4 * self.screen.get_width() / 5 + 10, 55 + i * 40))
+                self.screen.blit(font.render("_" * int(self.screen.get_width() / 5 / sample_text.get_width() - 1), 1, BLACK), (4 * self.screen.get_width() / 5 + 10, 55 + i * 40))
 
             for event in pygame.event.get():
                 if event.type == MOUSEBUTTONDOWN:
@@ -137,7 +135,7 @@ class Connect:
             self.screen.blit(self.quitter, (0, self.screen.get_height() - self.quitter.get_height()))
             pygame.draw.rect(self.screen, GREY, (self.pos_text_box[0] - 2, self.pos_text_box[1] - 2, 204, 24))
             pygame.draw.rect(self.screen, BLACK, self.pos_text_box + (200, 20))
-            self.screen.blit(self.text, ((self.screen.get_width() - self.text.get_width()) // 2, (self.screen.get_height() - self.text.get_height()) // 2 + 5))
+            self.screen.blit(self.text, ((self.screen.get_width() - self.text.get_width()) // 2, (self.screen.get_height() - self.text.get_height()) // 2))
             self.screen.blit(self.files[self.session[1]], self.avatar_pos)
             self.screen.blit(self.session_text, self.user_pos)
 

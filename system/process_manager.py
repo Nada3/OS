@@ -2,10 +2,8 @@ from .utils import *
 import time
 
 
-MAX = 10
-
-
 class ProcessManager:
+    MAX = 10
     instance = None
 
     def __init__(self):
@@ -33,9 +31,9 @@ class ProcessManager:
             ProcessManager.instance._execution_datas[process.get_title()]['exc_times'].append((time.time() - start) * 1000)
         else:
             ProcessManager.instance._execution_datas[process.get_title()]['draw_times'].append(0.0)
-        if len(ProcessManager.instance._execution_datas[process.get_title()]['exc_times']) > MAX:
+        if len(ProcessManager.instance._execution_datas[process.get_title()]['exc_times']) > ProcessManager.MAX:
             ProcessManager.instance._execution_datas[process.get_title()]['exc_times'] = \
-                ProcessManager.instance._execution_datas[process.get_title()]['exc_times'][::-1][:MAX][::-1]
+                ProcessManager.instance._execution_datas[process.get_title()]['exc_times'][::-1][:ProcessManager.MAX][::-1]
 
     @staticmethod
     def draw_process(process, *args):
@@ -45,9 +43,9 @@ class ProcessManager:
             ProcessManager.instance._execution_datas[process.get_title()]['draw_times'].append((time.time() - start) * 1000)
         else:
             ProcessManager.instance._execution_datas[process.get_title()]['draw_times'].append(0.0)
-        if len(ProcessManager.instance._execution_datas[process.get_title()]['draw_times']) > MAX:
+        if len(ProcessManager.instance._execution_datas[process.get_title()]['draw_times']) > ProcessManager.MAX:
             ProcessManager.instance._execution_datas[process.get_title()]['draw_times'] = \
-                ProcessManager.instance._execution_datas[process.get_title()]['draw_times'][::-1][:MAX][::-1]
+                ProcessManager.instance._execution_datas[process.get_title()]['draw_times'][::-1][:ProcessManager.MAX][::-1]
 
     @staticmethod
     def remove_process(i):
